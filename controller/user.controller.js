@@ -6,9 +6,20 @@ const { generateToken, tokenForVerify } = require("../utils/token");
 const { secret } = require("../config/secret");
 
 // register user
+
+//get all user
+exports.getAllUser = async (req, res) => {
+   try {
+      const users = await User.find();
+      res.status(200).json(users);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+};
+
 // sign up
 exports.signup = async (req, res,next) => {
-  try {
+  /* try {
     const user = await User.findOne({ email: req.body.email });
     if (user) {
       res.send({ status: "failed", message: "Email already exists" });
@@ -43,7 +54,8 @@ exports.signup = async (req, res,next) => {
     }
   } catch (error) {
     next(error)
-  }
+  } */
+  
 };
 
 /**

@@ -20,4 +20,7 @@ router.put('/update-user/:id', userController.updateUser);
 // register or login with google
 router.post("/register/:token", userController.signUpWithProvider);
 
+//get all user
+router.get("/all", userController.getAllUser);
+
 module.exports = router;
