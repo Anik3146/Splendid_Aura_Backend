@@ -1,17 +1,16 @@
-require('dotenv').config();
-const nodemailer = require('nodemailer');
-const { secret } = require('./secret');
+require("dotenv").config();
+const nodemailer = require("nodemailer");
+const { secret } = require("./secret");
 
 // sendEmail
 module.exports.sendEmail = (body, res, message) => {
   const transporter = nodemailer.createTransport({
-    host: secret.email_host,
-    service: secret.email_service, //comment this line if you use custom server/domain
-    port: secret.email_port,
-    secure: true,
+    host: "smtp.gmail.com", // Correct SMTP host
+    port: 465, // Use 465 for secure connections
+    secure: true, // Use SSL
     auth: {
-      user: secret.email_user,
-      pass: secret.email_pass,
+      user: process.env.EMAIL_USER, // Your Gmail address
+      pass: process.env.EMAIL_PASS, // Your App Password
     },
   });
 
@@ -22,7 +21,7 @@ module.exports.sendEmail = (body, res, message) => {
       });
       console.log(err.message);
     } else {
-      console.log('Server is ready to take our messages');
+      console.log("Server is ready to take our messages");
     }
   });
 
@@ -38,4 +37,3 @@ module.exports.sendEmail = (body, res, message) => {
     }
   });
 };
-
