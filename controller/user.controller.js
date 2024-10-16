@@ -19,14 +19,14 @@ exports.getAllUser = async (req, res) => {
 
 // sign up
 exports.signup = async (req, res,next) => {
-  /* try {
+  try {
     const user = await User.findOne({ email: req.body.email });
     if (user) {
       res.send({ status: "failed", message: "Email already exists" });
     } else {
       const saved_user = await User.create(req.body);
       const token = saved_user.generateConfirmationToken();
-      
+     
       await saved_user.save({ validateBeforeSave: false });
 
       const mailData = {
@@ -54,7 +54,7 @@ exports.signup = async (req, res,next) => {
     }
   } catch (error) {
     next(error)
-  } */
+  } 
   
 };
 
