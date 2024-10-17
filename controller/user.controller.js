@@ -43,7 +43,7 @@ exports.signup = async (req, res, next) => {
   
           <a href="${secret.client_url}/email-verify/${token}" style="background:#0989FF;color:white;border:1px solid #0989FF; padding: 10px 15px; border-radius: 4px; text-decoration:none;">Verify Account</a>
   
-          <p style="margin-top: 35px;">If you did not initiate this request, please contact us immediately at support@splendid_Aura.com</p>
+          <p style="margin-top: 35px;">If you did not initiate this request, please contact us immediately at support@Ssplendid_Aura.com</p>
   
           <p style="margin-bottom:0px;">Thank you</p>
           <strong>Splendid Aura Team</strong>
