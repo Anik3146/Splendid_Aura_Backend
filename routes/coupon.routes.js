@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const {
   addCoupon,
@@ -7,24 +7,27 @@ const {
   getCouponById,
   updateCoupon,
   deleteCoupon,
-} = require('../controller/coupon.controller');
-
-//add a coupon
-router.post('/add', addCoupon);
-
-//add multiple coupon
-router.post('/all', addAllCoupon);
+} = require("../controller/coupon.controller");
+const verify = require("../middleware/verifyToken"); // Make sure to import your verify middleware
 
 //get all coupon
-router.get('/', getAllCoupons);
+router.get("/", getAllCoupons);
 
 //get a coupon
-router.get('/:id', getCouponById);
+router.get("/:id", getCouponById);
+
+router.use(verify); // Apply the verify middleware to all routes below
 
 //update a coupon
-router.patch('/:id', updateCoupon);
+router.patch("/:id", updateCoupon);
 
 //delete a coupon
-router.delete('/:id', deleteCoupon);
+router.delete("/:id", deleteCoupon);
+
+//add a coupon
+router.post("/add", addCoupon);
+
+//add multiple coupon
+router.post("/all", addAllCoupon);
 
 module.exports = router;

@@ -35,9 +35,6 @@ app.use(express.static(path.join(__dirname, "public")));
 connectDB();
 
 app.use("/api/user", userRoutes); // Allow access to user routes (including login) without token
-
-// Apply token verification middleware to specific routes
-app.use(verify); // Apply verify middleware for all subsequent routes
 app.use("/api/category", categoryRoutes); // Protect all category routes
 app.use("/api/brand", brandRoutes); // Protect all brand routes
 app.use("/api/product", productRoutes); // Protect all product routes

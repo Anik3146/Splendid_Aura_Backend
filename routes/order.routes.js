@@ -6,6 +6,7 @@ const {
   updateOrderStatus,
   getSingleOrder,
 } = require("../controller/order.controller");
+const verify = require("../middleware/verifyToken"); // Make sure to import your verify middleware
 
 // router
 const router = express.Router();
@@ -14,6 +15,9 @@ const router = express.Router();
 router.get("/orders", getOrders);
 // single order
 router.get("/:id", getSingleOrder);
+
+router.use(verify); // Apply the verify middleware to all routes below
+
 // add a create payment intent
 router.post("/create-payment-intent", paymentIntent);
 // save Order

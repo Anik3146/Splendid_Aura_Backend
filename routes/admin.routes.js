@@ -13,6 +13,7 @@ const {
   confirmAdminEmail,
   confirmAdminForgetPass,
 } = require("../controller/admin.controller");
+const verify = require("../middleware/verifyToken"); // Make sure to import your verify middleware
 
 //Testing
 
