@@ -14,6 +14,8 @@ const {
   confirmAdminForgetPass,
 } = require("../controller/admin.controller");
 
+//Testing
+
 //register a staff
 router.post("/register", registerAdmin);
 
