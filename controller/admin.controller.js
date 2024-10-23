@@ -18,6 +18,7 @@ const registerAdmin = async (req, res,next) => {
         message: "This Email already Added!",
       });
     } else {
+  
       const newStaff = new Admin({
         name: req.body.name,
         email: req.body.email,
@@ -32,6 +33,7 @@ const registerAdmin = async (req, res,next) => {
         name: staff.name,
         email: staff.email,
         role: staff.role,
+        verified : false,
         joiningData: Date.now(),
       });
     }
@@ -39,13 +41,21 @@ const registerAdmin = async (req, res,next) => {
     next(err)
   }
 };
+
 // login admin
-const loginAdmin = async (req, res,next) => {
-  // console.log(req.body)
+const loginAdmin = async (req, res, next) => {
   try {
     const admin = await Admin.findOne({ email: req.body.email });
-    // console.log(admin)
+
+    // Check if the admin exists and the password is correct
     if (admin && bcrypt.compareSync(req.body.password, admin.password)) {
+      // Check if the admin is verified
+      if (!admin.verified) {
+        return res.status(403).send({
+          message: "Admin account is not verified!",
+        });
+      }
+
       const token = generateToken(admin);
       res.send({
         token,
@@ -55,6 +65,7 @@ const loginAdmin = async (req, res,next) => {
         email: admin.email,
         image: admin.image,
         role: admin.role,
+        verified : admin.verified,
       });
     } else {
       res.status(401).send({
@@ -62,9 +73,10 @@ const loginAdmin = async (req, res,next) => {
       });
     }
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
+
 // forget password
 const forgetPassword = async (req, res,next) => {
   try {

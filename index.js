@@ -43,7 +43,7 @@ app.use("/api/coupon", couponRoutes); // Protect all coupon routes
 app.use("/api/user-order", userOrderRoutes); // Protect all user-order routes
 app.use("/api/review", reviewRoutes); // Protect all review routes
 app.use("/api/cloudinary", cloudinaryRoutes); // Protect all cloudinary routes
-app.use("/api/admin", authorize("admin"), adminRoutes); // Protect admin routes for admin role
+app.use("/api/admin", adminRoutes); // Protect admin routes for admin role
 
 // Root route
 app.get("/", (req, res) => res.send("Apps worked successfully"));

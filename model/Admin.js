@@ -60,6 +60,10 @@ const adminSchema = new mongoose.Schema(
       type: Date,
       required: false,
     },
+    verified: {  // Add this line
+      type: Boolean,
+      default: false,
+    },
     confirmationToken: String,
     confirmationTokenExpires: Date,
   },
@@ -77,6 +81,7 @@ adminSchema.methods.generateConfirmationToken = function () {
   this.confirmationTokenExpires = date;
   return token;
 };
+
 
 const Admin = mongoose.model("Admin", adminSchema);
 
