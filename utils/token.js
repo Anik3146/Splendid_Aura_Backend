@@ -8,6 +8,7 @@ exports.generateToken = (userInfo) => {
     name: userInfo.name,
     email: userInfo.email,
     role: userInfo.role,
+    verified: userInfo.verified,
   };
 
   const token = jwt.sign(payload, secret.token_secret, {

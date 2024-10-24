@@ -3,9 +3,12 @@ const router = express.Router();
 // internal
 const uploader = require("../middleware/uploder");
 const { cloudinaryController } = require("../controller/cloudinary.controller");
+const verify = require("../middleware/verifyToken"); // Import your verify middleware
 const multer = require("multer");
 
 const upload = multer();
+
+router.use(verify);
 //add image
 router.post(
   "/add-img",

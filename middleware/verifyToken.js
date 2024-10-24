@@ -11,7 +11,6 @@ const { secret } = require("../config/secret");
  * 5. If valid and verified, call next
  */
 module.exports = async (req, res, next) => {
-  
   try {
     const token = req.headers?.authorization?.split(" ")?.[1];
 
@@ -23,9 +22,9 @@ module.exports = async (req, res, next) => {
     }
 
     const decoded = await promisify(jwt.verify)(token, secret.token_secret);
-    console.log(decoded)
+
     // Check if the admin is verified
-    if (decoded.role != 'Admin') {
+    if (decoded.role != "Admin" || !decoded.verified) {
       return res.status(403).json({
         status: "fail",
         error: "You do not have permission to perform this action",
