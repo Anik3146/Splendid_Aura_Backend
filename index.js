@@ -30,7 +30,8 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://splendid-aura-git-main-nazmul-hossain-aniks-projects.vercel.app", // Your frontend origin
+      "https://splendid-aura.vercel.app",
+      "https://admin-panel-nextjs-chi.vercel.app",
     ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Added PUT method
     credentials: true, // If you need to include cookies in requests
