@@ -26,7 +26,13 @@ const adminRoutes = require("./routes/admin.routes");
 const cloudinaryRoutes = require("./routes/cloudinary.routes");
 
 // Middleware setup
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Allow requests from your frontend
+    methods: ["GET", "POST"], // Allowed methods
+    credentials: true, // If you need to include cookies in requests
+  })
+);
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
