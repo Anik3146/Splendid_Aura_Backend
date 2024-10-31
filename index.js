@@ -32,6 +32,7 @@ app.use(
       "http://localhost:3000",
       "https://splendid-aura.vercel.app",
       "https://admin-panel-nextjs-chi.vercel.app",
+      "http://localhost:3001",
     ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Added PUT method
     credentials: true, // If you need to include cookies in requests
