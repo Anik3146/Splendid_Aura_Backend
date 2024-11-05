@@ -1,41 +1,11 @@
 const Brand = require("../model/Brand");
 const productServices = require("../services/product.service");
 const Product = require("../model/Products");
-const mongoose = require("mongoose");
 
 // add product
 exports.addProduct = async (req, res, next) => {
   console.log("product--->", req.body);
   try {
-    // Ensure the brand and category ids are valid ObjectIds
-    const brandId = req.body.brand?.id;
-    const categoryId = req.body.category?.id;
-    const reviews = req.body.reviews;
-
-    // Validate the ObjectIds before conversion
-    if (brandId && !mongoose.Types.ObjectId.isValid(brandId)) {
-      return res.status(400).json({ message: "Invalid brand ID format." });
-    }
-
-    if (categoryId && !mongoose.Types.ObjectId.isValid(categoryId)) {
-      return res.status(400).json({ message: "Invalid category ID format." });
-    }
-
-    // Convert 'brand.id' and 'category.id' to ObjectId before saving
-    const convertedBrandId = brandId
-      ? new mongoose.Types.ObjectId(brandId)
-      : null;
-    const convertedCategoryId = categoryId
-      ? new mongoose.Types.ObjectId(categoryId)
-      : null;
-
-    // Convert 'reviews' array to ObjectId if it's an array of valid ObjectIds
-    const convertedReviews =
-      reviews &&
-      reviews.every((reviewId) => mongoose.Types.ObjectId.isValid(reviewId))
-        ? reviews.map((reviewId) => new mongoose.Types.ObjectId(reviewId))
-        : [];
-
     const firstItem = {
       color: {
         name: "",
@@ -43,25 +13,14 @@ exports.addProduct = async (req, res, next) => {
       },
       img: req.body.img,
     };
-
-    // Add imageURLs, which is an array, to the product data
     const imageURLs = [firstItem, ...req.body.imageURLs];
-
-    // Create the product data with the converted ObjectId fields
-    const productData = {
+    const result = await productServices.createProductService({
       ...req.body,
-      brand: convertedBrandId, // Store brand as ObjectId
-      category: convertedCategoryId, // Store category as ObjectId
-      reviews: convertedReviews, // Reviews array already contains ObjectIds
-      imageURLs, // Including imageURLs
-    };
-
-    // Pass the productData to the service layer to handle saving
-    const result = await productServices.createProductService(productData);
+      imageURLs: imageURLs,
+    });
 
     console.log("product-result", result);
 
-    // Respond with a success message
     res.status(200).json({
       success: true,
       status: "success",
@@ -73,6 +32,7 @@ exports.addProduct = async (req, res, next) => {
     next(error);
   }
 };
+
 // add all product
 module.exports.addAllProducts = async (req, res, next) => {
   try {
