@@ -7,14 +7,34 @@ const mongoose = require("mongoose");
 exports.addProduct = async (req, res, next) => {
   console.log("product--->", req.body);
   try {
-    // Convert 'brand.id' and 'category.id' to ObjectId before saving
-    const brandId = new mongoose.Types.ObjectId(req.body.brand?.id); // Use `new` with ObjectId
-    const categoryId = new mongoose.Types.ObjectId(req.body.category?.id); // Use `new` with ObjectId
+    // Ensure the brand and category ids are valid ObjectIds
+    const brandId = req.body.brand?.id;
+    const categoryId = req.body.category?.id;
+    const reviews = req.body.reviews;
 
-    // Convert 'reviews' array to ObjectId if it's an array
-    const reviews = req.body.reviews?.map(
-      (reviewId) => new mongoose.Types.ObjectId(reviewId)
-    ); // Use `new` with ObjectId
+    // Validate the ObjectIds before conversion
+    if (brandId && !mongoose.Types.ObjectId.isValid(brandId)) {
+      return res.status(400).json({ message: "Invalid brand ID format." });
+    }
+
+    if (categoryId && !mongoose.Types.ObjectId.isValid(categoryId)) {
+      return res.status(400).json({ message: "Invalid category ID format." });
+    }
+
+    // Convert 'brand.id' and 'category.id' to ObjectId before saving
+    const convertedBrandId = brandId
+      ? new mongoose.Types.ObjectId(brandId)
+      : null;
+    const convertedCategoryId = categoryId
+      ? new mongoose.Types.ObjectId(categoryId)
+      : null;
+
+    // Convert 'reviews' array to ObjectId if it's an array of valid ObjectIds
+    const convertedReviews =
+      reviews &&
+      reviews.every((reviewId) => mongoose.Types.ObjectId.isValid(reviewId))
+        ? reviews.map((reviewId) => new mongoose.Types.ObjectId(reviewId))
+        : [];
 
     const firstItem = {
       color: {
@@ -30,13 +50,13 @@ exports.addProduct = async (req, res, next) => {
     // Create the product data with the converted ObjectId fields
     const productData = {
       ...req.body,
-      brand: { id: brandId }, // Use ObjectId for brand
-      category: { id: categoryId }, // Use ObjectId for category
-      reviews, // Reviews array already contains ObjectIds
+      brand: convertedBrandId, // Store brand as ObjectId
+      category: convertedCategoryId, // Store category as ObjectId
+      reviews: convertedReviews, // Reviews array already contains ObjectIds
       imageURLs, // Including imageURLs
     };
 
-    // Pass productData to the service layer to handle saving
+    // Pass the productData to the service layer to handle saving
     const result = await productServices.createProductService(productData);
 
     console.log("product-result", result);
