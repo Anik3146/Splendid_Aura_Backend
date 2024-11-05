@@ -1,6 +1,7 @@
 const Brand = require("../model/Brand");
 const productServices = require("../services/product.service");
 const Product = require("../model/Products");
+const mongoose = require("mongoose");
 
 // add product
 exports.addProduct = async (req, res, next) => {
