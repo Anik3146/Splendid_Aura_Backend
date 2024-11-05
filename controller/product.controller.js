@@ -8,13 +8,13 @@ exports.addProduct = async (req, res, next) => {
   console.log("product--->", req.body);
   try {
     // Convert 'brand.id' and 'category.id' to ObjectId before saving
-    const brandId = mongoose.Types.ObjectId(req.body.brand?.id);
-    const categoryId = mongoose.Types.ObjectId(req.body.category?.id);
+    const brandId = new mongoose.Types.ObjectId(req.body.brand?.id); // Use `new` with ObjectId
+    const categoryId = new mongoose.Types.ObjectId(req.body.category?.id); // Use `new` with ObjectId
 
     // Convert 'reviews' array to ObjectId if it's an array
-    const reviews = req.body.reviews?.map((reviewId) =>
-      mongoose.Types.ObjectId(reviewId)
-    );
+    const reviews = req.body.reviews?.map(
+      (reviewId) => new mongoose.Types.ObjectId(reviewId)
+    ); // Use `new` with ObjectId
 
     const firstItem = {
       color: {
@@ -53,7 +53,6 @@ exports.addProduct = async (req, res, next) => {
     next(error);
   }
 };
-
 // add all product
 module.exports.addAllProducts = async (req, res, next) => {
   try {
