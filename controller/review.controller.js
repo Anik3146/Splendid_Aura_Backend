@@ -53,34 +53,27 @@ exports.addReview = async (req, res, next) => {
 // delete a review
 exports.deleteReviews = async (req, res, next) => {
   try {
-    await Coupon.findByIdAndDelete(req.params.id);
+    const productId = req.params.id;
+    const result = await Review.deleteMany({ productId: productId });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "Product reviews not found" });
+    }
+    res.json({ message: "All reviews deleted for the product" });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+// delete a review
+exports.deleteSingleReviews = async (req, res, next) => {
+  try {
+    await Review.findByIdAndDelete(req.params.id);
     res.status(200).json({
       success: true,
       message: "Review deleted successfully",
     });
   } catch (error) {
-    next(error);
-  }
-};
-
-// Get all reviews
-exports.getAllReviews = async (req, res, next) => {
-  try {
-    // Fetch all reviews and populate user and product details
-    const reviews = await Review.find()
-      .populate("userId", "name email") // Populate user information (name, email)
-      .populate("productId", "name price") // Populate product information (name, price)
-      .exec();
-
-    // If no reviews are found
-    if (reviews.length === 0) {
-      return res.status(404).json({ message: "No reviews found." });
-    }
-
-    // Return all reviews with populated user and product data
-    return res.status(200).json({ reviews });
-  } catch (error) {
-    console.log(error);
     next(error);
   }
 };
