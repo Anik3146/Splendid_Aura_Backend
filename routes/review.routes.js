@@ -10,12 +10,12 @@ const verify = require("../middleware/verifyToken"); // Make sure to import your
 // add a review
 router.post("/add", addReview);
 
+// Get all reviews (new route)
+router.get("/all", getAllReviews);
+
 //router.use(verify); // Apply the verify middleware to all routes below
 router.use(verify);
 // delete reviews
 router.delete("/delete/:id", deleteReviews);
-
-// Get all reviews (new route)
-router.get("/all", getAllReviews);
 
 module.exports = router;
