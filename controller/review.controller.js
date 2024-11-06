@@ -65,28 +65,24 @@ exports.deleteReviews = async (req, res, next) => {
   }
 };
 
-// Get all reviews (new function)
-exports.getAllReviews = async (req, res) => {
+// Get all reviews
+exports.getAllReviews = async (req, res, next) => {
   try {
-    // Retrieve all reviews from the database
-    const reviews = await Review.find().populate("userId productId"); // Optionally, populate with user and product details if needed
+    // Fetch all reviews and populate user and product details
+    const reviews = await Reviews.find()
+      .populate("userId", "name email") // Populate user information (name, email)
+      .populate("productId", "name price") // Populate product information (name, price)
+      .exec();
 
+    // If no reviews are found
     if (reviews.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No reviews found",
-      });
+      return res.status(404).json({ message: "No reviews found." });
     }
 
-    res.status(200).json({
-      success: true,
-      data: reviews,
-    });
+    // Return all reviews with populated user and product data
+    return res.status(200).json({ reviews });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      success: false,
-      message: "Error while retrieving reviews",
-    });
+    console.log(error);
+    next(error);
   }
 };
