@@ -53,14 +53,12 @@ exports.addReview = async (req, res, next) => {
 // delete a review
 exports.deleteReviews = async (req, res, next) => {
   try {
-    const productId = req.params.id;
-    const result = await Review.deleteMany({ productId: productId });
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ error: "Product reviews not found" });
-    }
-    res.json({ message: "All reviews deleted for the product" });
+    await Coupon.findByIdAndDelete(req.params.id);
+    res.status(200).json({
+      success: true,
+      message: "Review deleted successfully",
+    });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
