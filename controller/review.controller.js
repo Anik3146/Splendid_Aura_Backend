@@ -69,7 +69,7 @@ exports.deleteReviews = async (req, res, next) => {
 exports.getAllReviews = async (req, res, next) => {
   try {
     // Fetch all reviews and populate user and product details
-    const reviews = await Reviews.find()
+    const reviews = await Review.find()
       .populate("userId", "name email") // Populate user information (name, email)
       .populate("productId", "name price") // Populate product information (name, price)
       .exec();
