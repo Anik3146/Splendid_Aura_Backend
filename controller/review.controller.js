@@ -5,7 +5,7 @@ const Review = require("../model/Review");
 const User = require("../model/User");
 
 // add a review
-exports.addReview = async (req, res,next) => {
+exports.addReview = async (req, res, next) => {
   const { userId, productId, rating, comment } = req.body;
   try {
     // Check if the user has already left a review for this product
@@ -46,21 +46,47 @@ exports.addReview = async (req, res,next) => {
     return res.status(201).json({ message: "Review added successfully." });
   } catch (error) {
     console.log(error);
-    next(error)
+    next(error);
   }
 };
 
 // delete a review
-exports.deleteReviews = async (req, res,next) => {
+exports.deleteReviews = async (req, res, next) => {
   try {
     const productId = req.params.id;
-    const result = await Review.deleteMany({productId: productId });
+    const result = await Review.deleteMany({ productId: productId });
     if (result.deletedCount === 0) {
-      return res.status(404).json({ error: 'Product reviews not found' });
+      return res.status(404).json({ error: "Product reviews not found" });
     }
-    res.json({ message: 'All reviews deleted for the product' });
+    res.json({ message: "All reviews deleted for the product" });
   } catch (error) {
     console.log(error);
-    next(error)
+    next(error);
+  }
+};
+
+// Get all reviews (new function)
+exports.getAllReviews = async (req, res) => {
+  try {
+    // Retrieve all reviews from the database
+    const reviews = await Review.find().populate("userId productId"); // Optionally, populate with user and product details if needed
+
+    if (reviews.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No reviews found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: reviews,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Error while retrieving reviews",
+    });
   }
 };

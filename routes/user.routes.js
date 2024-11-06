@@ -18,5 +18,6 @@ router.put("/update-user/:id", userController.updateUser);
 router.post("/register/:token", userController.signUpWithProvider);
 router.use(verify); // Apply the verify middleware to all routes below
 router.get("/all", userController.getAllUser); // Requires token
+router.delete("/delete-user/:id", userController.deleteUser); // New route to delete a user
 
 module.exports = router;

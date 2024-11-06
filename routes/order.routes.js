@@ -5,6 +5,7 @@ const {
   getOrders,
   updateOrderStatus,
   getSingleOrder,
+  deleteOrder,
 } = require("../controller/order.controller");
 const verify = require("../middleware/verifyToken"); // Make sure to import your verify middleware
 
@@ -24,5 +25,8 @@ router.post("/create-payment-intent", paymentIntent);
 router.post("/saveOrder", addOrder);
 // update status
 router.patch("/update-status/:id", updateOrderStatus);
+
+// DELETE Order
+router.delete("/delete-order/:id", deleteOrder);
 
 module.exports = router;

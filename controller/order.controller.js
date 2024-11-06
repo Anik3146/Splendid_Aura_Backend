@@ -19,7 +19,7 @@ exports.paymentIntent = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    next(error)
+    next(error);
   }
 };
 // addOrder
@@ -32,35 +32,32 @@ exports.addOrder = async (req, res, next) => {
       message: "Order added successfully",
       order: orderItems,
     });
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error);
-    next(error)
+    next(error);
   }
 };
 // get Orders
 exports.getOrders = async (req, res, next) => {
   try {
-    const orderItems = await Order.find({}).populate('user');
+    const orderItems = await Order.find({}).populate("user");
     res.status(200).json({
       success: true,
       data: orderItems,
     });
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error);
-    next(error)
+    next(error);
   }
 };
 // get Orders
 exports.getSingleOrder = async (req, res, next) => {
   try {
-    const orderItem = await Order.findById(req.params.id).populate('user');
+    const orderItem = await Order.findById(req.params.id).populate("user");
     res.status(200).json(orderItem);
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error);
-    next(error)
+    next(error);
   }
 };
 
@@ -75,14 +72,44 @@ exports.updateOrderStatus = async (req, res) => {
         $set: {
           status: newStatus,
         },
-      }, { new: true })
+      },
+      { new: true }
+    );
     res.status(200).json({
       success: true,
-      message: 'Status updated successfully',
+      message: "Status updated successfully",
     });
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error);
-    next(error)
+    next(error);
+  }
+};
+
+// Delete Order
+exports.deleteOrder = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Delete the order from the database
+    const deletedOrder = await Order.findByIdAndDelete(id);
+
+    if (!deletedOrder) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Order deleted successfully",
+      order: deletedOrder,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Error while deleting the order",
+    });
   }
 };

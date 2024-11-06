@@ -355,3 +355,39 @@ exports.signUpWithProvider = async (req, res, next) => {
     next(error);
   }
 };
+
+// Delete User by ID
+exports.deleteUser = async (req, res) => {
+  const { id } = req.params; // Extract user ID from the request parameters
+
+  try {
+    // Check if the user exists
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Optionally, you can add additional checks, e.g., check if the user is trying to delete themselves
+    // if (req.user.id === id) {
+    //   return res.status(400).json({ success: false, message: "You cannot delete your own account" });
+    // }
+
+    // Delete the user
+    await User.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Error while deleting the user",
+    });
+  }
+};
