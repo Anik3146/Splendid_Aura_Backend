@@ -7,10 +7,7 @@ exports.createProductService = async (data) => {
   const product = await Product.create(data);
   const { _id: productId, brand, category } = product;
   //update Brand
-  await Brand.updateOne(
-    { _id: brand.id },
-    { $push: { products: productId } }
-  );
+  await Brand.updateOne({ _id: brand.id }, { $push: { products: productId } });
   //Category Brand
   await Category.updateOne(
     { _id: category.id },
@@ -129,63 +126,71 @@ exports.getRelatedProductService = async (productId) => {
 
 // update a product
 exports.updateProductService = async (id, currProduct) => {
-  // console.log('currProduct',currProduct)
-  const product = await Product.findById(id);
-  if (product) {
+  try {
+    console.log("Updating product with ID:", id); // Log the ID being updated
+    const product = await Product.findById(id);
+    if (!product) {
+      console.log("Product not found");
+      return null; // If no product is found, return null
+    }
+
+    // Update fields
     product.title = currProduct.title;
-    product.brand.name = currProduct.brand.name;
-    product.brand.id = currProduct.brand.id;
-    product.category.name = currProduct.category.name;
-    product.category.id = currProduct.category.id;
     product.sku = currProduct.sku;
     product.img = currProduct.img;
     product.slug = currProduct.slug;
     product.unit = currProduct.unit;
-    product.imageURLs = currProduct.imageURLs;
-    product.tags = currProduct.tags;
-    product.parent = currProduct.parent;
-    product.children = currProduct.children;
     product.price = currProduct.price;
     product.discount = currProduct.discount;
     product.quantity = currProduct.quantity;
     product.status = currProduct.status;
     product.productType = currProduct.productType;
     product.description = currProduct.description;
+    product.brand = currProduct.brand;
+    product.category = currProduct.category;
+    product.offerDate = currProduct.offerDate;
     product.additionalInformation = currProduct.additionalInformation;
-    product.offerDate.startDate = currProduct.offerDate.startDate;
-    product.offerDate.endDate = currProduct.offerDate.endDate;
+    product.children = currProduct.children;
+    product.parent = currProduct.parent;
+    product.sizes = currProduct.sizes; // Update sizes
+    product.tags = currProduct.tags; // Update tags
+    product.imageURLs = currProduct.imageURLs; // Update image URLs
 
-    await product.save();
+    // Save the updated product
+    const updatedProduct = await product.save();
+    console.log("Updated product:", updatedProduct); // Log the updated product
+
+    return updatedProduct;
+  } catch (error) {
+    console.error("Error updating product:", error);
+    throw error; // Throw error to be caught by the controller
   }
-
-  return product;
 };
-
-
 
 // get Reviews Products
 exports.getReviewsProducts = async () => {
   const result = await Product.find({
     reviews: { $exists: true, $ne: [] },
-  })
-    .populate({
-      path: "reviews",
-      populate: { path: "userId", select: "name email imageURL" },
-    });
+  }).populate({
+    path: "reviews",
+    populate: { path: "userId", select: "name email imageURL" },
+  });
 
-  const products = result.filter(p => p.reviews.length > 0)
+  const products = result.filter((p) => p.reviews.length > 0);
 
   return products;
 };
 
 // get Reviews Products
 exports.getStockOutProducts = async () => {
-  const result = await Product.find({ status: "out-of-stock" }).sort({ createdAt: -1 })
+  const result = await Product.find({ status: "out-of-stock" }).sort({
+    createdAt: -1,
+  });
   return result;
 };
 
 // get Reviews Products
 exports.deleteProduct = async (id) => {
-  const result = await Product.findByIdAndDelete(id)
+  const result = await Product.findByIdAndDelete(id);
   return result;
 };
