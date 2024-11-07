@@ -8,7 +8,7 @@ const multer = require("multer");
 
 const upload = multer();
 
-router.use(verify);
+//router.use(verify);
 //add image
 router.post(
   "/add-img",
