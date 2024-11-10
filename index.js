@@ -27,19 +27,16 @@ const cloudinaryRoutes = require("./routes/cloudinary.routes");
 
 
 // Middleware setup: Apply CORS before any route handling
+// CORS Middleware - Allow all origins and methods
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000", // Local frontend URL
-      "https://splendid-aura.vercel.app", // Production frontend URL
-      "https://admin-panel-nextjs-chi.vercel.app", // Admin frontend URL
-      "http://localhost:3001", // If you use a different local environment
-    ],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"], // Ensure Content-Type is allowed for file uploads
-    credentials: true, // This allows cookies and authorization headers to be sent
+    origin: "*", // Allow all origins
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Allow all common methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Allow Content-Type and Authorization headers
+    credentials: true, // Allow cookies and authentication headers if needed
   })
 );
+
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
