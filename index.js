@@ -25,18 +25,19 @@ const reviewRoutes = require("./routes/review.routes");
 const adminRoutes = require("./routes/admin.routes");
 const cloudinaryRoutes = require("./routes/cloudinary.routes");
 
-
-// Middleware setup: Apply CORS before any route handling
-// CORS Middleware - Allow all origins and methods
+// Middleware setup
 app.use(
   cors({
-    origin: "*", // Allow all origins
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Allow all common methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Allow Content-Type and Authorization headers
-    credentials: true, // Allow cookies and authentication headers if needed
+    origin: [
+      "http://localhost:3000",
+      "https://splendid-aura.vercel.app",
+      "https://admin-panel-nextjs-chi.vercel.app",
+      "http://localhost:3001",
+    ],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Added PUT method
+    credentials: true, // If you need to include cookies in requests
   })
 );
-
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
