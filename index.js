@@ -38,6 +38,7 @@ app.use(
     credentials: true, // If you need to include cookies in requests
   })
 );
+app.options('*', cors());
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
