@@ -29,10 +29,10 @@ const cloudinaryRoutes = require("./routes/cloudinary.routes");
 app.use(
   cors({
     origin: [
-      "http://localhost:3000",
-      "https://splendid-aura.vercel.app",
-      "https://admin-panel-nextjs-chi.vercel.app",
-      "http://localhost:3001",
+      "http://localhost:3000", // Your local frontend
+      "https://splendid-aura.vercel.app", // Your production frontend
+      "https://admin-panel-nextjs-chi.vercel.app", // Your admin frontend
+      "http://localhost:3001", // If you're using another local server for something else
     ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Added PUT method
     credentials: true, // If you need to include cookies in requests
