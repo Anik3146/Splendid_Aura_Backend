@@ -44,7 +44,7 @@ const upload = multer({
 
 // Upload image to Cloudinary endpoint
 router.post("/add", upload.single("image"), async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins temporarily
+  
   if (!req.file) {
     return res.status(400).json({
       success: false,

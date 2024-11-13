@@ -28,18 +28,13 @@ const adminRoutes = require("./routes/admin.routes");
 const cloudinaryRoutes = require("./routes/cloudinary.routes");
 
 // Middleware setup
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "https://splendid-aura.vercel.app",
-      "https://admin-panel-nextjs-chi.vercel.app",
-      "http://localhost:3001",
-    ],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: "*", // Temporarily allow all origins for testing purposes
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  credentials: true,
+}));
+
+
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
