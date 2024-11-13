@@ -1,17 +1,19 @@
 require("dotenv").config();
 const express = require("express");
-const app = express();
 const path = require("path");
 const cors = require("cors");
 const connectDB = require("./config/db");
-const { secret } = require("./config/secret");
-const PORT = secret.port || 7000;
 const morgan = require("morgan");
+const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
+const fs = require("fs");
+
+const app = express();
 
 // Middleware
 const globalErrorHandler = require("./middleware/global-error-handler");
-const verify = require("./middleware/verifyToken"); // Import your verify middleware
-const authorize = require("./middleware/authorization"); // Import your authorization middleware
+const verify = require("./middleware/verifyToken");
+const authorize = require("./middleware/authorization");
 
 // Routes
 const userRoutes = require("./routes/user.routes");
@@ -34,8 +36,8 @@ app.use(
       "https://admin-panel-nextjs-chi.vercel.app",
       "http://localhost:3001",
     ],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Added PUT method
-    credentials: true, // If you need to include cookies in requests
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    credentials: true,
   })
 );
 app.use(express.json());
@@ -45,21 +47,86 @@ app.use(express.static(path.join(__dirname, "public")));
 // Connect database
 connectDB();
 
-app.use("/api/user", userRoutes); // Allow access to user routes (including login) without token
-app.use("/api/category", categoryRoutes); // Protect all category routes
-app.use("/api/brand", brandRoutes); // Protect all brand routes
-app.use("/api/product", productRoutes); // Protect all product routes
-app.use("/api/order", orderRoutes); // Protect all order routes
-app.use("/api/coupon", couponRoutes); // Protect all coupon routes
-app.use("/api/user-order", userOrderRoutes); // Protect all user-order routes
-app.use("/api/review", reviewRoutes); // Protect all review routes
-app.use("/api/cloudinary", cloudinaryRoutes); // Protect all cloudinary routes
-app.use("/api/admin", adminRoutes); // Protect admin routes for admin role
+// Routes
+app.use("/api/user", userRoutes);
+app.use("/api/category", categoryRoutes);
+app.use("/api/brand", brandRoutes);
+app.use("/api/product", productRoutes);
+app.use("/api/order", orderRoutes);
+app.use("/api/coupon", couponRoutes);
+app.use("/api/user-order", userOrderRoutes);
+app.use("/api/review", reviewRoutes);
+app.use("/api/cloudinary", cloudinaryRoutes);
+app.use("/api/admin", adminRoutes);
+
+// Cloudinary configuration (use environment variables)
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Multer setup to handle file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = './uploads';
+    // Check if the upload directory exists, if not, create it
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir);
+    }
+    cb(null, uploadDir); // Store file temporarily in the 'uploads' folder
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+  },
+});
+
+const upload = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    // Validate file type (only image files)
+    if (!file.mimetype.startsWith("image/")) {
+      return cb(new Error("Please upload an image file."), false);
+    }
+    cb(null, true); // Accept the file
+  },
+});
+
+// Upload image to Cloudinary endpoint
+app.post("/api/cloud/add", upload.single("image"), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({
+      success: false,
+      message: "No file uploaded",
+    });
+  }
+
+  try {
+    // Upload file to Cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "Images", // Upload the file to a folder called 'Images'
+    });
+
+    // Delete the file from the local filesystem after upload
+    fs.unlinkSync(req.file.path);
+
+    // Respond with the uploaded image URL
+    return res.status(200).json({
+      success: true,
+      imageUrl: result.secure_url, // URL of the uploaded image
+    });
+  } catch (error) {
+    console.error("Error uploading to Cloudinary:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to upload image to Cloudinary",
+      error: error.message,
+    });
+  }
+});
 
 // Root route
 app.get("/", (req, res) => res.send("Apps worked successfully"));
-
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 // Global error handler
 app.use(globalErrorHandler);
@@ -77,6 +144,12 @@ app.use((req, res, next) => {
     ],
   });
   next();
+});
+
+// Start server
+const PORT = process.env.PORT || 7000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
 module.exports = app;
