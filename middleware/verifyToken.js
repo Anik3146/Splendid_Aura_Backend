@@ -24,7 +24,10 @@ module.exports = async (req, res, next) => {
     const decoded = await promisify(jwt.verify)(token, secret.token_secret);
 
     // Check if the admin is verified
-    if (decoded.role != "Admin" || !decoded.verified) {
+    if (
+      (decoded.role != "Manager" && decoded.role != "Admin") ||
+      !decoded.verified
+    ) {
       return res.status(403).json({
         status: "fail",
         error: "You do not have permission to perform this action",
