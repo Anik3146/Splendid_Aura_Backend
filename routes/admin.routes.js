@@ -12,6 +12,7 @@ const {
   forgetPassword,
   confirmAdminEmail,
   confirmAdminForgetPass,
+  verifyAdminEmail,
 } = require("../controller/admin.controller");
 const verify = require("../middleware/verifyToken"); // Make sure to import your verify middleware
 const { isAdmin } = require("../config/auth"); // Adjust the path as necessary
@@ -50,5 +51,8 @@ router.patch("/update-stuff/:id", updateStaff);
 
 //delete a staff
 router.delete("/:id", deleteStaff);
+
+// Route for email verification
+router.get("/verify-email/:token", verifyAdminEmail);
 
 module.exports = router;
