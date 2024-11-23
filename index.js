@@ -35,6 +35,7 @@ app.use(
       "https://splendid-aura.vercel.app",
       "https://admin-panel-nextjs-chi.vercel.app",
       "http://localhost:3001",
+      "https://res.cloudinary.com", // Add Cloudinary URL domain for media delivery
     ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     credentials: true,
