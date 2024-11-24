@@ -17,12 +17,14 @@ router.get("/orders", getOrders);
 // single order
 router.get("/:id", getSingleOrder);
 
-router.use(verify); // Apply the verify middleware to all routes below
-
 // add a create payment intent
 router.post("/create-payment-intent", paymentIntent);
+
 // save Order
 router.post("/saveOrder", addOrder);
+
+router.use(verify); // Apply the verify middleware to all routes below
+
 // update status
 router.patch("/update-status/:id", updateOrderStatus);
 

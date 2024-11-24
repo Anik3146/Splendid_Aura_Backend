@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const userOrderController = require("../controller/user.order.controller");
-const verifyToken = require("../middleware/verifyToken");
+const verifyUserToken = require("../middleware/verifyUserToken");
 
 // get dashboard amount
 router.get("/dashboard-amount", userOrderController.getDashboardAmount);
@@ -22,6 +22,6 @@ router.get(
 router.get("/:id", userOrderController.getOrderById);
 
 //get all order by a user
-router.get("/", verifyToken, userOrderController.getOrderByUser);
+router.get("/", verifyUserToken, userOrderController.getOrderByUser);
 
 module.exports = router;
